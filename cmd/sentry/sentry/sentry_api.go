@@ -118,6 +118,7 @@ func (cs *MultiClient) SendHeaderRequest(ctx context.Context, req *headerdownloa
 			return [64]byte{}, false
 		}
 		if sentPeers == nil || len(sentPeers.Peers) == 0 {
+			log.Debug("SendHeaderRequest", "peers number", len(sentPeers.Peers))
 			continue
 		}
 		return ConvertH512ToPeerID(sentPeers.Peers[0]), true
