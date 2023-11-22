@@ -1014,7 +1014,7 @@ func (hi *HeaderInserter) BestHeaderChanged() bool {
 func (hd *HeaderDownload) ProcessHeader(sh ChainSegmentHeader, newBlock bool, peerID [64]byte) bool {
 	hd.lock.Lock()
 	defer hd.lock.Unlock()
-	log.Debug("====ProcessHeader====", "NewBlock ", sh.Number, "hd.highestInDb", hd.highestInDb)
+	log.Debug("====ProcessHeader====", "NewBlock ", sh.Number, "hd.highestInDb", "NewBlockHash", sh.Hash, hd.highestInDb)
 	if sh.Number > hd.stats.RespMaxBlock {
 		hd.stats.RespMaxBlock = sh.Number
 	}
@@ -1027,7 +1027,6 @@ func (hd *HeaderDownload) ProcessHeader(sh ChainSegmentHeader, newBlock bool, pe
 		if sh.Number == hd.highestInDb+1 || sh.Number == hd.highestInDb {
 			delete(hd.links, sh.Hash)
 		}
-		return false
 	}
 	parent, foundParent := hd.links[sh.Header.ParentHash]
 	anchor, foundAnchor := hd.anchors[sh.Hash]
@@ -1061,6 +1060,7 @@ func (hd *HeaderDownload) ProcessHeader(sh ChainSegmentHeader, newBlock bool, pe
 		if parent.persisted {
 			link.linked = true
 			hd.moveLinkToQueue(link, InsertQueueID)
+			log.Info("Move to InsertQueue", "Number", link.blockHeight, "Hash", link.hash)
 		}
 	} else {
 		// The link has not known parent, therefore it becomes an anchor, unless it is too far in the past
