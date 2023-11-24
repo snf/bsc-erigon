@@ -858,7 +858,7 @@ func UpgradeBuildInSystemContract(config *chain.Config, blockNumber *big.Int, la
 		applySystemContractUpgrade(PlatoUpgrade[network], blockNumber, statedb, logger)
 	}
 
-	if config.IsOnKepler(lastBlockTime, blockTime) {
+	if config.IsOnKepler(blockNumber, lastBlockTime, blockTime) {
 		applySystemContractUpgrade(KeplerUpgrade[network], blockNumber, statedb, logger)
 	}
 	/*

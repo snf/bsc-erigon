@@ -1409,7 +1409,7 @@ func (p *Parlia) distributeIncoming(val libcommon.Address, state *state.IntraBlo
 	state.SetBalance(consensus.SystemAddress, u256.Num0)
 	state.AddBalance(coinbase, balance)
 
-	doDistributeSysReward := !p.chainConfig.IsKepler(header.Time) &&
+	doDistributeSysReward := !p.chainConfig.IsKepler(header.Number.Uint64(), header.Time) &&
 		state.GetBalance(systemcontracts.SystemRewardContract).Cmp(maxSystemBalance) < 0
 	if doDistributeSysReward {
 		var rewards = new(uint256.Int)
