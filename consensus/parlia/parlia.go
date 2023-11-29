@@ -49,7 +49,7 @@ import (
 )
 
 const (
-	inMemorySnapshots  = 128  // Number of recent snapshots to keep in memory
+	inMemorySnapshots  = 256  // Number of recent snapshots to keep in memory
 	inMemorySignatures = 4096 // Number of recent block signatures to keep in memory
 
 	CheckpointInterval = 1024        // Number of blocks after which to save the snapshot to the database
