@@ -24,6 +24,7 @@
   "berlinBlock":31103030,
   "londonBlock": 31103030,
   "hertzBlock": 31103030,
+  "hertzfixBlock":35682300,
   "parlia": {
     "DBPath": "",
     "InMemory": false,
