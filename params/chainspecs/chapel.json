@@ -25,6 +25,8 @@
   "londonBlock": 31103030,
   "hertzBlock": 31103030,
   "hertzfixBlock":35682300,
+  "shanghaiTime":1702972800,
+  "keplerTime": 1702972800,
   "parlia": {
     "DBPath": "",
     "InMemory": false,
