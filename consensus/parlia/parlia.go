@@ -707,6 +707,13 @@ func (p *Parlia) prepareValidators(header *types.Header, chain consensus.ChainHe
 		}
 	} else {
 		header.Extra = append(header.Extra, byte(len(newValidators)))
+		if p.chainConfig.IsOnLuban(header.Number) {
+			voteAddressMap = make(map[libcommon.Address]*types.BLSPublicKey, len(newValidators))
+			var zeroBlsKey types.BLSPublicKey
+			for _, validator := range newValidators {
+				voteAddressMap[validator] = &zeroBlsKey
+			}
+		}
 		for _, validator := range newValidators {
 			header.Extra = append(header.Extra, validator.Bytes()...)
 			header.Extra = append(header.Extra, voteAddressMap[validator].Bytes()...)
@@ -902,6 +909,13 @@ func (p *Parlia) verifyValidators(header, parentHeader *types.Header, state *sta
 			return errMismatchingEpochValidators
 		}
 		validatorsBytes = make([]byte, validatorsNumber*validatorBytesLength)
+		if p.chainConfig.IsOnLuban(header.Number) {
+			voteAddressMap = make(map[libcommon.Address]*types.BLSPublicKey, len(newValidators))
+			var zeroBlsKey types.BLSPublicKey
+			for _, validator := range newValidators {
+				voteAddressMap[validator] = &zeroBlsKey
+			}
+		}
 		for i, validator := range newValidators {
 			copy(validatorsBytes[i*validatorBytesLength:], validator.Bytes())
 			copy(validatorsBytes[i*validatorBytesLength+length.Addr:], voteAddressMap[validator].Bytes())
@@ -1398,7 +1412,8 @@ func (p *Parlia) distributeIncoming(val libcommon.Address, state *state.IntraBlo
 	state.SetBalance(consensus.SystemAddress, u256.Num0)
 	state.AddBalance(coinbase, balance)
 
-	doDistributeSysReward := state.GetBalance(systemcontracts.SystemRewardContract).Cmp(maxSystemBalance) < 0
+	doDistributeSysReward := !p.chainConfig.IsKepler(header.Number.Uint64(), header.Time) &&
+		state.GetBalance(systemcontracts.SystemRewardContract).Cmp(maxSystemBalance) < 0
 	if doDistributeSysReward {
 		var rewards = new(uint256.Int)
 		rewards = rewards.Rsh(balance, systemRewardPercent)
