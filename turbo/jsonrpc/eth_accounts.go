@@ -91,6 +91,9 @@ func (api *APIImpl) GetCode(ctx context.Context, address libcommon.Address, bloc
 		return nil, err
 	}
 
+	if reader == nil {
+		return nil, fmt.Errorf("getCode cannot open reader for state")
+	}
 	acc, err := reader.ReadAccountData(address)
 	if acc == nil || err != nil {
 		return hexutility.Bytes(""), nil
